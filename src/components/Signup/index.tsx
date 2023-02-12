@@ -1,14 +1,16 @@
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import { Button, TextField, Box, Stack, Container } from "@mui/material";
 import { useAuth } from "../../contexts/AuthContext";
 import { Link, useNavigate } from "react-location";
+import { createUser } from "../../firestore";
+import { NorthWest } from "@mui/icons-material";
 
 interface SignupProps {}
 
 export const Signup: React.FC<SignupProps> = () => {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [passwordConfirm, setPasswordConfirm] = useState("");
+  const [email, setEmail] = useState("@gmail.com");
+  const [password, setPassword] = useState("123456");
+  const [passwordConfirm, setPasswordConfirm] = useState("123456");
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
 
@@ -19,6 +21,20 @@ export const Signup: React.FC<SignupProps> = () => {
   const { signup, currentUser } = useAuth();
 
   const navigate = useNavigate()
+
+  useEffect(() => {
+    const createUserWithCurrentUser = async () => {
+      if (currentUser) {
+        try{
+        await createUser(currentUser.uid, currentUser.email, ["pushups","situps","squats"], [{discipline: "pushups", targetReps: 100}],[{discipline: "pushups", timeStamp: new Date(), reps: 100}])}
+        catch(error){
+          console.log('failed to create new user in database')
+        }
+      }
+    }
+  
+    createUserWithCurrentUser();
+  }, [currentUser]);
 
   async function handleSignUp(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -39,6 +55,10 @@ export const Signup: React.FC<SignupProps> = () => {
       setLoading(false)
     }
   }
+
+
+  
+
 
   return (
     <div>

@@ -1,4 +1,3 @@
-import { useState } from "react";
 import { Router, Route, Outlet, ReactLocation, Link } from "react-location";
 import { Goals, Dashboard, Signup, Login, PrivateRoute, ResetPassword, UpdateProfile } from "./components";
 import { Button, ButtonGroup } from "@mui/material";
