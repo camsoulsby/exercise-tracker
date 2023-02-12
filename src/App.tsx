@@ -1,7 +1,7 @@
 import { Router, Route, Outlet, ReactLocation, Link } from "react-location";
-import { Goals, Dashboard, Signup, Login, PrivateRoute, ResetPassword, UpdateProfile } from "./components";
-import { Button, ButtonGroup } from "@mui/material";
+import { Dashboard, Signup, Login, PrivateRoute, ResetPassword, AccountSettings, TopNav } from "./components";
 import { AuthProvider } from "./contexts/AuthContext";
+
 
 const routes: Route[] = [
   {
@@ -13,10 +13,10 @@ const routes: Route[] = [
     ),
   },
   {
-    path: "/update-profile",
+    path: "/account",
     element: (
       <PrivateRoute>
-        <UpdateProfile />
+        <AccountSettings />
       </PrivateRoute>
     ),
   },
@@ -32,14 +32,6 @@ const routes: Route[] = [
     path: "/reset-password",
     element: <ResetPassword />,
   },
-  {
-    path: "/goals",
-    element: (
-      <PrivateRoute>
-        <Goals />
-      </PrivateRoute>
-    ),
-  },
 ];
 
 const location = new ReactLocation();
@@ -48,15 +40,9 @@ function App() {
   return (
     <Router routes={routes} location={location}>
       <AuthProvider>
-        <ButtonGroup>
-          <Button>
-            <Link to="/">Dashboard</Link>
-          </Button>
-          <Button>
-            <Link to="/goals">Goals</Link>
-          </Button>
-        </ButtonGroup>
-
+        <TopNav />
+           
+          
         <Outlet />
       </AuthProvider>
     </Router>

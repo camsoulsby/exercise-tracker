@@ -4,9 +4,10 @@ import { Button, TextField, Box, Stack, Container } from "@mui/material";
 import { useAuth } from "../../contexts/AuthContext";
 import { Link, useNavigate } from "react-location";
 
-interface UpdateProfileProps {}
 
-export const UpdateProfile: React.FC<UpdateProfileProps> = () => {
+interface AccountSettingsProps {}
+
+export const AccountSettings: React.FC<AccountSettingsProps> = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [passwordConfirm, setPasswordConfirm] = useState("");
@@ -17,13 +18,24 @@ export const UpdateProfile: React.FC<UpdateProfileProps> = () => {
   const passwordRef = useRef<HTMLInputElement | null>(null);
   const passwordConfirmRef = useRef<HTMLInputElement | null>(null);
 
-  const { currentUser, updateUserEmail, updateUserPassword } = useAuth();
+  const { currentUser, updateUserEmail, updateUserPassword, logout } = useAuth();
 
   const navigate = useNavigate();
 
   useEffect(() => {
     setEmail(currentUser?.email)
   }, []);
+
+  async function handleLogout() {
+    setError("");
+
+    try {
+      await logout();
+      navigate({ to: "../login" });
+    } catch {
+      setError("Failed to log out");
+    }
+  }
 
   
 
@@ -106,6 +118,9 @@ export const UpdateProfile: React.FC<UpdateProfileProps> = () => {
         <Box>
           <Link to='/'>Cancel</Link>
         </Box>
+        <Button variant="contained" onClick={handleLogout}>
+        Log Out
+      </Button>
       </Container>
     </div>
   );

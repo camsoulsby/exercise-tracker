@@ -26,9 +26,9 @@ export const Signup: React.FC<SignupProps> = () => {
     const createUserWithCurrentUser = async () => {
       if (currentUser) {
         try{
-        await createUser(currentUser.uid, currentUser.email, ["pushups","situps","squats"], [{discipline: "pushups", targetReps: 100}],[{discipline: "pushups", timeStamp: new Date(), reps: 100}])}
+        await createUser(currentUser.uid, currentUser.email)}
         catch(error){
-          console.log('failed to create new user in database')
+          console.log({error})
         }
       }
     }

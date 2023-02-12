@@ -12,33 +12,12 @@ import {
 //create
 export const createUser = async (
   newUid: string,
-  newName: string,
-  newDisciplines: string[],
-  newGoals: {discipline: string, targetReps: number}[],
-  newSets: {discipline: string, timeStamp: Date, reps: number}[]
+  newEmail: string,
 ) => {
   const docRef = doc(db, "users", newUid);
-  const data = { name: newName };
+  const data = { email: newEmail };
   await setDoc(docRef, data);
 
-  const disciplinesRef = collection(docRef,"disciplines");
-    newDisciplines.forEach(async (discipline) => {
-      const disciplinesDocRef = doc(docRef, "disciplines", discipline);
-      
-      await setDoc(disciplinesDocRef, { name: discipline })
-    });
-
-    const goalsRef = collection(docRef,"goals");
-    newGoals.forEach(async (goal) => {await addDoc(goalsRef, {goal});
-
-    
-    newSets.forEach(async (set) => {
-      const disciplinesDocRef = doc(disciplinesRef, set.discipline);
-    const setsRef = collection(disciplinesDocRef,"sets");
-      await addDoc(setsRef, {set})
-    });
-
-})
 }
 
 //read
@@ -49,19 +28,49 @@ export const getUsers = async () => {
     const userData = doc.data();
     return {
       id: doc.id,
-      name: userData.name || "",
-      age: userData.age || 0,
+      email: userData.email || "",
     };
   });
   return mappedData;
 };
 
+export const getDisciplines = async (userId: string) => {
+  const userDoc = doc(db, "users", userId);
+  const disciplinesRef = collection(userDoc, "disciplines");
+  const data = await getDocs(disciplinesRef);
+  const mappedData = data.docs.map((doc) => {
+    const disciplineData = doc.data();
+    return {
+      id: doc.id,
+      name: disciplineData.name || "",
+    };
+  });
+  return mappedData;
+}
+
 //update
-export const addToUserAge = async (id: string, currentAge: number) => {
-  const newFields = { age: currentAge + 1 };
-  const userDoc = doc(db, "users", id);
-  await updateDoc(userDoc, newFields);
-};
+export const addDiscipline = async (userId: string, newDiscipline: string) => {
+  const userDoc = doc(db, "users", userId);
+  const disciplinesRef = collection(userDoc, "disciplines");
+  await addDoc(disciplinesRef, { name: newDiscipline });
+}
+
+export const addGoal = async (userId: string, disciplineId: string, goal:{targetReps: number, startDate: Date, endDate: Date }) => {
+  const userDoc = doc(db, "users", userId);
+  const disciplinesRef = collection(userDoc, "disciplines");
+  const disciplineDoc = doc(disciplinesRef, disciplineId);
+  const goalsRef = collection(disciplineDoc, "goals");
+  await addDoc(goalsRef, {goal})
+  
+}
+
+export const addSet = async (userId: string, disciplineId: string, set: { timeStamp: Date, reps: number}) => {
+  const userDoc = doc(db, "users", userId);
+  const disciplinesRef = collection(userDoc, "disciplines");
+  const disciplineDoc = doc(disciplinesRef, disciplineId);
+  const setsRef = collection(disciplineDoc, "sets");
+  await addDoc(setsRef, {set})
+}
 
 //delete
 export const deleteUser = async (id: string) => {

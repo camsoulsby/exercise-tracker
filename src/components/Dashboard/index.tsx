@@ -2,25 +2,28 @@ import React, { useState, useEffect } from "react";
 import { Button } from "@mui/material";
 import { useAuth } from "../../contexts/AuthContext";
 import { Link, useNavigate } from "react-location";
+import { DisciplineCard } from "../../components";
+// import {} from '@mui/icons-material';
 import {
-  createUser,
   deleteUser,
-  addToUserAge,
-  getUsers,
+  addDiscipline,
+  addGoal,
+  addSet,
+  getDisciplines,
 } from "../../firestore";
 
 type DashboardProps = {};
 
 export const Dashboard: React.FunctionComponent<DashboardProps> = () => {
-  const [users, setUsers] = useState<
-    Array<{ id: string; name: string; age: number }>
+  const [newDiscipline, setNewDiscipline] = useState("");
+  const [users, setUsers] = useState<Array<{ id: string; email: string }>>([]);
+  const [disciplines, setDisciplines] = useState<
+    Array<{ id: string; name: string }>
   >([]);
-  const [newNameVal, setNewNameVal] = useState("");
-  const [newAgeVal, setNewAgeVal] = useState(0);
 
   const fetchData = async () => {
-    const updatedUsers = await getUsers();
-    setUsers(updatedUsers);
+    const updatedDisciplines = await getDisciplines(currentUser.uid);
+    setDisciplines(updatedDisciplines);
   };
 
   useEffect(() => {
@@ -33,80 +36,35 @@ export const Dashboard: React.FunctionComponent<DashboardProps> = () => {
 
   const navigate = useNavigate();
 
-  async function handleLogout() {
-    setError("");
-
-    try {
-      await logout();
-      navigate({ to: "../login" });
-    } catch {
-      setError("Failed to log out");
-    }
-  }
-
   return (
     <>
-      <h1>Profile</h1>
-      {error ? <p>{error}</p> : null}
-
-      <strong>Current user:</strong>
-      {currentUser?.email}
-
-      <h2>Users</h2>
-      {users.map((user) => {
+  
+      {disciplines.map((discipline) => {
         return (
-          <div key={user.id}>
-            <h1>Name: {user.name}</h1>
-            <h1>Name: {user.age}</h1>
-            <button
-              onClick={() => {
-                addToUserAge(user.id, user.age);
-                fetchData();
-              }}
-            >
-              Increase age
-            </button>
-            <button
-              onClick={() => {
-                deleteUser(user.id);
-                fetchData();
-              }}
-            >
-              Delete user
-            </button>
+          <div key={discipline.id}>
+          <DisciplineCard name={discipline.name} userId={currentUser.uid} disciplineId={discipline.id} updateData={fetchData}  />
           </div>
         );
       })}
-      {/* <input
-        placeholder="Name..."
-        value={newNameVal}
+      <input
+        placeholder="Add new discipline..."
+        value={newDiscipline}
         onChange={(event) => {
-          setNewNameVal(event.target.value);
+          setNewDiscipline(event.target.value);
         }}
       />
-      <input
-        type="number"
-        placeholder="Age..."
-        value={newAgeVal}
-        onChange={(event) => {
-          setNewAgeVal(parseInt(event.target.value));
-        }}
-      /> */}
-      {/* <Button
+      <button
         onClick={() => {
-          createUser(currentUser.uid,newNameVal, newAgeVal);
-          setNewAgeVal(0);
-          setNewNameVal("");
+          addDiscipline(currentUser.uid, newDiscipline);
           fetchData();
         }}
       >
-        Add user
-      </Button> */}
+        Add
+      </button>
 
-      <Link to="/update-profile">Update Profile</Link>
-      <Button variant="contained" onClick={handleLogout}>
-        Log Out
-      </Button>
+     
+      
+
     </>
   );
 };
