@@ -1,9 +1,7 @@
-
 import React, { useState, useRef, useEffect } from "react";
 import { Button, TextField, Box, Stack, Container } from "@mui/material";
 import { useAuth } from "../../contexts/AuthContext";
 import { Link, useNavigate } from "react-location";
-
 
 interface AccountSettingsProps {}
 
@@ -18,12 +16,13 @@ export const AccountSettings: React.FC<AccountSettingsProps> = () => {
   const passwordRef = useRef<HTMLInputElement | null>(null);
   const passwordConfirmRef = useRef<HTMLInputElement | null>(null);
 
-  const { currentUser, updateUserEmail, updateUserPassword, logout } = useAuth();
+  const { currentUser, updateUserEmail, updateUserPassword, logout } =
+    useAuth();
 
   const navigate = useNavigate();
 
   useEffect(() => {
-    setEmail(currentUser?.email)
+    setEmail(currentUser?.email);
   }, []);
 
   async function handleLogout() {
@@ -37,8 +36,6 @@ export const AccountSettings: React.FC<AccountSettingsProps> = () => {
     }
   }
 
-  
-
   function handleSignUp(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
 
@@ -48,7 +45,7 @@ export const AccountSettings: React.FC<AccountSettingsProps> = () => {
     }
     const promises: Promise<any>[] = [];
     setLoading(true);
-    setError('');
+    setError("");
     if (emailRef?.current?.value !== currentUser?.email) {
       promises.push(updateUserEmail(emailRef?.current?.value));
     }
@@ -56,15 +53,17 @@ export const AccountSettings: React.FC<AccountSettingsProps> = () => {
       promises.push(updateUserPassword(passwordRef?.current?.value));
     }
 
-    Promise.all(promises).then(() => {
-        navigate({ to: '../'})
-    }).catch(() => {
-        setError("Failed to update account")
-
-    }).finally(() => {
-        setLoading(false)
-    }
-    )}
+    Promise.all(promises)
+      .then(() => {
+        navigate({ to: "../" });
+      })
+      .catch(() => {
+        setError("Failed to update account");
+      })
+      .finally(() => {
+        setLoading(false);
+      });
+  }
 
   return (
     <div>
@@ -73,10 +72,9 @@ export const AccountSettings: React.FC<AccountSettingsProps> = () => {
           <form onSubmit={handleSignUp}>
             <h2>Update Profile</h2>
             <p>{`Current user: ${currentUser?.email}`}</p>
-            
+
             <Stack>
-                
-                {error ? <p>{error}</p> : null}
+              {error ? <p>{error}</p> : null}
               <TextField
                 id="email"
                 label="Email"
@@ -95,7 +93,6 @@ export const AccountSettings: React.FC<AccountSettingsProps> = () => {
                 onChange={(event) => setPassword(event.currentTarget.value)}
                 margin="normal"
                 inputRef={passwordRef}
-                
               />
               <TextField
                 id="password-confirm"
@@ -109,18 +106,23 @@ export const AccountSettings: React.FC<AccountSettingsProps> = () => {
                 inputRef={passwordConfirmRef}
                 placeholder="Leave blank to keep the same"
               />
-              <Button disabled={loading} type="submit" variant="contained" color="primary">
+              <Button
+                disabled={loading}
+                type="submit"
+                variant="contained"
+                color="primary"
+              >
                 Update
               </Button>
             </Stack>
           </form>
         </Box>
         <Box>
-          <Link to='/'>Cancel</Link>
+          <Link to="/">Cancel</Link>
         </Box>
         <Button variant="contained" onClick={handleLogout}>
-        Log Out
-      </Button>
+          Log Out
+        </Button>
       </Container>
     </div>
   );

@@ -1,6 +1,8 @@
 import { Router, Route, Outlet, ReactLocation, Link } from "react-location";
 import { Dashboard, Signup, Login, PrivateRoute, ResetPassword, AccountSettings, TopNav } from "./components";
 import { AuthProvider } from "./contexts/AuthContext";
+import { CssBaseline, ThemeProvider } from "@mui/material";
+import darkTheme from "./themes/DarkTheme";
 
 
 const routes: Route[] = [
@@ -38,6 +40,8 @@ const location = new ReactLocation();
 
 function App() {
   return (
+    <ThemeProvider theme={darkTheme}>
+      <CssBaseline />
     <Router routes={routes} location={location}>
       <AuthProvider>
         <TopNav />
@@ -46,6 +50,7 @@ function App() {
         <Outlet />
       </AuthProvider>
     </Router>
+    </ThemeProvider>
   );
 }
 

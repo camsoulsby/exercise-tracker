@@ -14,25 +14,24 @@ export const Login: React.FC<LoginProps> = () => {
 
   const emailRef = useRef<HTMLInputElement | null>(null);
   const passwordRef = useRef<HTMLInputElement | null>(null);
-  
-  const navigate = useNavigate()
+
+  const navigate = useNavigate();
 
   const { login, currentUser } = useAuth();
 
   async function handleSignUp(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
 
-  
     if (emailRef.current && passwordRef.current) {
       try {
-        setError('')
-        setLoading(true)
+        setError("");
+        setLoading(true);
         await login(emailRef.current.value, passwordRef.current.value);
-        navigate({ to: '../'})
+        navigate({ to: "../" });
       } catch {
         setError("Failed to sign in");
       }
-      setLoading(false)
+      setLoading(false);
     }
   }
 
@@ -43,10 +42,9 @@ export const Login: React.FC<LoginProps> = () => {
           <form onSubmit={handleSignUp}>
             <h2>Log In</h2>
             <p>{`Current user: ${currentUser?.email}`}</p>
-            
+
             <Stack>
-                
-                {error ? <p>{error}</p> : null}
+              {error ? <p>{error}</p> : null}
               <TextField
                 id="email"
                 label="Email"
@@ -67,19 +65,23 @@ export const Login: React.FC<LoginProps> = () => {
                 inputRef={passwordRef}
                 required
               />
-             
-              <Button disabled={loading} type="submit" variant="contained" color="primary">
+
+              <Button
+                disabled={loading}
+                type="submit"
+                variant="contained"
+                color="primary"
+              >
                 Log In
               </Button>
-
             </Stack>
           </form>
         </Box>
         <Box>
-          Need an account? <Link to='/signup'>Sign Up</Link>
+          Need an account? <Link to="/signup">Sign Up</Link>
         </Box>
         <Box>
-          Forgot password? <Link to='/reset-password'>Reset Password</Link>
+          Forgot password? <Link to="/reset-password">Reset Password</Link>
         </Box>
       </Container>
     </div>

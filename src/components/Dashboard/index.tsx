@@ -38,11 +38,15 @@ export const Dashboard: React.FunctionComponent<DashboardProps> = () => {
 
   return (
     <>
-  
       {disciplines.map((discipline) => {
         return (
           <div key={discipline.id}>
-          <DisciplineCard name={discipline.name} userId={currentUser.uid} disciplineId={discipline.id} updateData={fetchData}  />
+            <DisciplineCard
+              name={discipline.name}
+              userId={currentUser.uid}
+              disciplineId={discipline.id}
+              updateData={fetchData}
+            />
           </div>
         );
       })}
@@ -61,10 +65,6 @@ export const Dashboard: React.FunctionComponent<DashboardProps> = () => {
       >
         Add
       </button>
-
-     
-      
-
     </>
   );
 };
