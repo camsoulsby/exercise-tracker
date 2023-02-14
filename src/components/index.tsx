@@ -6,3 +6,4 @@ export { ResetPassword } from "./ResetPassword";
 export { AccountSettings } from "./AccountSettings";
 export { TopNav } from "./TopNav";
 export { DisciplineCard } from "./DisciplineCard";
+export { EnterRepsPopup } from "./EnterRepsPopUp";

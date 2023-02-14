@@ -12,6 +12,7 @@ import {
   getDisciplines,
 } from "../../firestore";
 
+
 type DashboardProps = {};
 
 export const Dashboard: React.FunctionComponent<DashboardProps> = () => {
@@ -42,7 +43,7 @@ export const Dashboard: React.FunctionComponent<DashboardProps> = () => {
         return (
           <div key={discipline.id}>
             <DisciplineCard
-              name={discipline.name}
+              disciplineName={discipline.name}
               userId={currentUser.uid}
               disciplineId={discipline.id}
               updateData={fetchData}
@@ -65,6 +66,7 @@ export const Dashboard: React.FunctionComponent<DashboardProps> = () => {
       >
         Add
       </button>
+      
     </>
   );
 };

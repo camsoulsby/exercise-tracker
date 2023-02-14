@@ -47,6 +47,49 @@ export const getDisciplines = async (userId: string) => {
   });
   return mappedData;
 }
+//todo: add start and end dates to this function
+export const getTotalRepsForPeriod = async (userId: string, disciplineId: string) => {
+  const userDoc = doc(db, "users", userId);
+  const disciplinesRef = collection(userDoc, "disciplines");
+  const disciplineDoc = doc(disciplinesRef, disciplineId);
+  const setsRef = collection(disciplineDoc, "sets");
+  const data = await getDocs(setsRef);
+  const mappedData = data.docs.map((doc) => {
+    const setData = doc.data();
+    return {
+      id: doc.id,
+      reps: setData.reps || 0,
+      timeStamp: setData.timeStamp || new Date(),
+    };
+  });
+  // console.log(mappedData)
+  // const filteredData = mappedData.filter((set) => set.timeStamp >= startDate && set.timeStamp <= endDate);
+  const filteredData = mappedData;
+  const totalReps = filteredData.reduce((acc, set) => acc + set.reps, 0);
+  return totalReps;
+}
+
+interface DataPoint {
+  timeStamp: Date
+}
+
+export const getMostRecentSetDate = async (userId: string, disciplineId: string) => {
+  const userDoc = doc(db, "users", userId);
+  const disciplinesRef = collection(userDoc, "disciplines");
+  const disciplineDoc = doc(disciplinesRef, disciplineId);
+  const setsRef = collection(disciplineDoc, "sets");
+  const data = await getDocs(setsRef);
+  const mappedData: DataPoint[] = data.docs.map((doc) => {
+    const setData = doc.data();
+    return {
+      timeStamp: setData.timeStamp.toDate()
+    };
+  });
+
+const lastSetDate = new Date(Math.max(...mappedData.map(set => set.timeStamp.getTime())));
+return lastSetDate;
+ 
+}
 
 //update
 export const addDiscipline = async (userId: string, newDiscipline: string) => {
@@ -60,7 +103,7 @@ export const addGoal = async (userId: string, disciplineId: string, goal:{target
   const disciplinesRef = collection(userDoc, "disciplines");
   const disciplineDoc = doc(disciplinesRef, disciplineId);
   const goalsRef = collection(disciplineDoc, "goals");
-  await addDoc(goalsRef, {goal})
+  await addDoc(goalsRef, goal)
   
 }
 
@@ -69,7 +112,7 @@ export const addSet = async (userId: string, disciplineId: string, set: { timeSt
   const disciplinesRef = collection(userDoc, "disciplines");
   const disciplineDoc = doc(disciplinesRef, disciplineId);
   const setsRef = collection(disciplineDoc, "sets");
-  await addDoc(setsRef, {set})
+  await addDoc(setsRef, set)
 }
 
 //delete
