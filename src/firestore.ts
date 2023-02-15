@@ -47,8 +47,8 @@ export const getDisciplines = async (userId: string) => {
   });
   return mappedData;
 }
-//todo: add start and end dates to this function
-export const getTotalRepsForPeriod = async (userId: string, disciplineId: string) => {
+
+export const getTotalRepsForPeriod = async (userId: string, disciplineId: string, startDate: Date, endDate: Date) => {
   const userDoc = doc(db, "users", userId);
   const disciplinesRef = collection(userDoc, "disciplines");
   const disciplineDoc = doc(disciplinesRef, disciplineId);
@@ -62,9 +62,9 @@ export const getTotalRepsForPeriod = async (userId: string, disciplineId: string
       timeStamp: setData.timeStamp || new Date(),
     };
   });
-  // console.log(mappedData)
-  // const filteredData = mappedData.filter((set) => set.timeStamp >= startDate && set.timeStamp <= endDate);
-  const filteredData = mappedData;
+  
+  const filteredData = mappedData.filter((set) => set.timeStamp.toDate() >= startDate && set.timeStamp.toDate() <= endDate);
+  // const filteredData = mappedData;
   const totalReps = filteredData.reduce((acc, set) => acc + set.reps, 0);
   return totalReps;
 }

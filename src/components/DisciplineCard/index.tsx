@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Container, Typography, Button, ButtonGroup } from "@mui/material";
-import { Add, LastPage } from "@mui/icons-material";
-import { addGoal, addSet, getMostRecentSetDate, getTotalRepsForPeriod } from "../../firestore";
+import { Add } from "@mui/icons-material";
+import { getMostRecentSetDate, getTotalRepsForPeriod } from "../../firestore";
 import { EnterRepsPopup } from "../../components";
 
 interface DisciplineCardProps {
@@ -10,19 +10,6 @@ interface DisciplineCardProps {
   disciplineId: string;
   updateData: () => void;
 }
-
-const printDate = (date: Date) => {
-    const todayDate = new Date()
-    if (date.getDate() === todayDate.getDate()) {
-        return (`${date.getHours()}:${String(date.getMinutes()).padStart(2, "0")}`)
-    } else {
-        return (`${date.getHours()}:${String(date.getMinutes()).padStart(2, "0")} on ${date.toLocaleDateString()}`)
-    }
-
-     
-    
-}
-
 
 export const DisciplineCard: React.FC<DisciplineCardProps> = ({
   disciplineName,
@@ -45,7 +32,10 @@ export const DisciplineCard: React.FC<DisciplineCardProps> = ({
   };
 
   const getRepsToday = async () => {
-    const reps = await getTotalRepsForPeriod(userId, disciplineId);
+    const todayMidnight = new Date();
+    todayMidnight.setHours(0, 0, 0, 0);
+    const now = new Date();
+    const reps = await getTotalRepsForPeriod(userId, disciplineId, todayMidnight, now);
     setRepsToday(reps);
   };
   const getLastSetDate= async () => {
@@ -63,6 +53,15 @@ export const DisciplineCard: React.FC<DisciplineCardProps> = ({
     getRepsToday();
     getLastSetDate();
   };
+  
+const printDate = (date: Date) => {
+    const todayDate = new Date()
+    if (date.getDate() === todayDate.getDate()) {
+        return (`${date.getHours()}:${String(date.getMinutes()).padStart(2, "0")} today`)
+    } else {
+        return (`${date.getHours()}:${String(date.getMinutes()).padStart(2, "0")} on ${date.toLocaleDateString()}`)
+    } 
+}
 
   return (
     <Container
@@ -96,7 +95,7 @@ export const DisciplineCard: React.FC<DisciplineCardProps> = ({
             handleEnterReps(10);
           }}
         >
-          10 Reps
+          10
         </Button>
         <Button
           startIcon={<Add />}
@@ -106,7 +105,7 @@ export const DisciplineCard: React.FC<DisciplineCardProps> = ({
             handleEnterReps(20);
           }}
         >
-          20 Reps
+          20
         </Button>
         <Button
           startIcon={<Add />}
@@ -116,7 +115,7 @@ export const DisciplineCard: React.FC<DisciplineCardProps> = ({
             handleEnterReps(30);
           }}
         >
-          30 Reps
+          30
         </Button>
         <Button
           startIcon={<Add />}
