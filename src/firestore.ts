@@ -2,6 +2,7 @@ import { db } from "./firebase";
 import {
   collection,
   getDocs,
+  getDoc,
   updateDoc,
   doc,
   deleteDoc,
@@ -13,11 +14,24 @@ import {
 export const createUser = async (
   newUid: string,
   newEmail: string,
+  newUsername: string
 ) => {
   const docRef = doc(db, "users", newUid);
-  const data = { email: newEmail };
+  const data = { email: newEmail, username: newUsername };
   await setDoc(docRef, data);
 
+}
+
+export const getUsername = async (userId: string) => {
+  const userDoc = doc(db, "users", userId);
+  const userSnapshot = await getDoc(userDoc);
+  if (userSnapshot.exists()) {
+    const userData = userSnapshot.data();
+    const username = userData.username;
+    return username;
+  } else {
+    return "null";
+  }
 }
 
 //read
@@ -48,6 +62,49 @@ export const getDisciplines = async (userId: string) => {
   return mappedData;
 }
 
+export const getTotalRepsForPeriod = async (userId: string, disciplineId: string, startDate: Date, endDate: Date) => {
+  const userDoc = doc(db, "users", userId);
+  const disciplinesRef = collection(userDoc, "disciplines");
+  const disciplineDoc = doc(disciplinesRef, disciplineId);
+  const setsRef = collection(disciplineDoc, "sets");
+  const data = await getDocs(setsRef);
+  const mappedData = data.docs.map((doc) => {
+    const setData = doc.data();
+    return {
+      id: doc.id,
+      reps: setData.reps || 0,
+      timeStamp: setData.timeStamp || new Date(),
+    };
+  });
+  
+  const filteredData = mappedData.filter((set) => set.timeStamp.toDate() >= startDate && set.timeStamp.toDate() <= endDate);
+  // const filteredData = mappedData;
+  const totalReps = filteredData.reduce((acc, set) => acc + set.reps, 0);
+  return totalReps;
+}
+
+interface DataPoint {
+  timeStamp: Date
+}
+
+export const getMostRecentSetDate = async (userId: string, disciplineId: string) => {
+  const userDoc = doc(db, "users", userId);
+  const disciplinesRef = collection(userDoc, "disciplines");
+  const disciplineDoc = doc(disciplinesRef, disciplineId);
+  const setsRef = collection(disciplineDoc, "sets");
+  const data = await getDocs(setsRef);
+  const mappedData: DataPoint[] = data.docs.map((doc) => {
+    const setData = doc.data();
+    return {
+      timeStamp: setData.timeStamp.toDate()
+    };
+  });
+
+const lastSetDate = new Date(Math.max(...mappedData.map(set => set.timeStamp.getTime())));
+return lastSetDate;
+ 
+}
+
 //update
 export const addDiscipline = async (userId: string, newDiscipline: string) => {
   const userDoc = doc(db, "users", userId);
@@ -60,7 +117,7 @@ export const addGoal = async (userId: string, disciplineId: string, goal:{target
   const disciplinesRef = collection(userDoc, "disciplines");
   const disciplineDoc = doc(disciplinesRef, disciplineId);
   const goalsRef = collection(disciplineDoc, "goals");
-  await addDoc(goalsRef, {goal})
+  await addDoc(goalsRef, goal)
   
 }
 
@@ -69,7 +126,7 @@ export const addSet = async (userId: string, disciplineId: string, set: { timeSt
   const disciplinesRef = collection(userDoc, "disciplines");
   const disciplineDoc = doc(disciplinesRef, disciplineId);
   const setsRef = collection(disciplineDoc, "sets");
-  await addDoc(setsRef, {set})
+  await addDoc(setsRef, set)
 }
 
 //delete

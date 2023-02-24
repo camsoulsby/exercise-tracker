@@ -13,26 +13,28 @@ export const Signup: React.FC<SignupProps> = () => {
   const [passwordConfirm, setPasswordConfirm] = useState("123456");
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
+  const [username, setUsername] = useState("")
 
   const emailRef = useRef<HTMLInputElement | null>(null);
   const passwordRef = useRef<HTMLInputElement | null>(null);
   const passwordConfirmRef = useRef<HTMLInputElement | null>(null);
+  const usernameRef = useRef<HTMLInputElement | null>(null);
 
   const { signup, currentUser } = useAuth();
 
-  const navigate = useNavigate()
+  const navigate = useNavigate();
 
   useEffect(() => {
     const createUserWithCurrentUser = async () => {
       if (currentUser) {
-        try{
-        await createUser(currentUser.uid, currentUser.email)}
-        catch(error){
-          console.log({error})
+        try {
+          await createUser(currentUser.uid, currentUser.email, username);
+        } catch (error) {
+          console.log({ error });
         }
       }
-    }
-  
+    };
+
     createUserWithCurrentUser();
   }, [currentUser]);
 
@@ -45,20 +47,16 @@ export const Signup: React.FC<SignupProps> = () => {
     }
     if (emailRef.current && passwordRef.current && passwordConfirmRef.current) {
       try {
-        setError('')
-        setLoading(true)
+        setError("");
+        setLoading(true);
         await signup(emailRef.current.value, passwordRef.current.value);
-        navigate({ to: '../'})
+        navigate({ to: "../" });
       } catch {
         setError("Failed to create an account");
       }
-      setLoading(false)
+      setLoading(false);
     }
   }
-
-
-  
-
 
   return (
     <div>
@@ -67,10 +65,19 @@ export const Signup: React.FC<SignupProps> = () => {
           <form onSubmit={handleSignUp}>
             <h2>Sign Up</h2>
             <p>{`Current user: ${currentUser?.email}`}</p>
-            
+
             <Stack>
-                
-                {error ? <p>{error}</p> : null}
+              {error ? <p>{error}</p> : null}
+              <TextField
+                id="username"
+                label="Username"
+                type="text"
+                value={username}
+                onChange={(event) => setUsername(event.currentTarget.value)}
+                margin="normal"
+                inputRef={usernameRef}
+                required
+              />
               <TextField
                 id="email"
                 label="Email"
@@ -103,14 +110,19 @@ export const Signup: React.FC<SignupProps> = () => {
                 inputRef={passwordConfirmRef}
                 required
               />
-              <Button disabled={loading} type="submit" variant="contained" color="primary">
+              <Button
+                disabled={loading}
+                type="submit"
+                variant="contained"
+                color="primary"
+              >
                 Sign Up
               </Button>
             </Stack>
           </form>
         </Box>
         <Box>
-          Already have a login? <Link to='/login'>Log In</Link>
+          Already have a login? <Link to="/login">Log In</Link>
         </Box>
       </Container>
     </div>

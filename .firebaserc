@@ -1,0 +1,9 @@
+{
+  "projects": {
+    "default": "exercise-tracker-19107",
+    "prod": "exercise-tracker-19107",
+    "dev": "exercise-tracker-dev-522c7"
+  },
+  "targets": {},
+  "etags": {}
+}

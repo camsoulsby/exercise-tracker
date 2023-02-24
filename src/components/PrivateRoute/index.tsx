@@ -3,11 +3,10 @@ import { useNavigate } from "react-location";
 import { useAuth } from "../../contexts/AuthContext";
 
 interface PrivateRouteProps {
-    children: React.ReactNode;
-  }
-  
+  children: React.ReactNode;
+}
 
- export const PrivateRoute: React.FC<PrivateRouteProps> = ({ children }) => {
+export const PrivateRoute: React.FC<PrivateRouteProps> = ({ children }) => {
   const { currentUser } = useAuth();
   const navigate = useNavigate();
 
@@ -16,6 +15,4 @@ interface PrivateRouteProps {
     return null;
   }
   return <>{children}</>;
-}
-
-
+};
