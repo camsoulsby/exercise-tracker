@@ -74,7 +74,7 @@ const printFormattedDateString = (date: Date) => {
         position: "relative",
         backgroundColor: "grey.300",
         margin: "10px 0 10px 0",
-        height: "240px",
+        height: "200px",
       }}
     >
       {showEnterRepsPopup && (
