@@ -2,6 +2,7 @@ import { db } from "./firebase";
 import {
   collection,
   getDocs,
+  getDoc,
   updateDoc,
   doc,
   deleteDoc,
@@ -13,11 +14,24 @@ import {
 export const createUser = async (
   newUid: string,
   newEmail: string,
+  newUsername: string
 ) => {
   const docRef = doc(db, "users", newUid);
-  const data = { email: newEmail };
+  const data = { email: newEmail, username: newUsername };
   await setDoc(docRef, data);
 
+}
+
+export const getUsername = async (userId: string) => {
+  const userDoc = doc(db, "users", userId);
+  const userSnapshot = await getDoc(userDoc);
+  if (userSnapshot.exists()) {
+    const userData = userSnapshot.data();
+    const username = userData.username;
+    return username;
+  } else {
+    return "null";
+  }
 }
 
 //read

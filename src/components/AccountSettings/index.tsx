@@ -2,6 +2,7 @@ import React, { useState, useRef, useEffect } from "react";
 import { Button, TextField, Box, Stack, Container } from "@mui/material";
 import { useAuth } from "../../contexts/AuthContext";
 import { Link, useNavigate } from "react-location";
+import { addDiscipline } from "../../firestore";
 
 interface AccountSettingsProps {}
 
@@ -11,6 +12,7 @@ export const AccountSettings: React.FC<AccountSettingsProps> = () => {
   const [passwordConfirm, setPasswordConfirm] = useState("");
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
+  const [newDiscipline, setNewDiscipline] = useState("");
 
   const emailRef = useRef<HTMLInputElement | null>(null);
   const passwordRef = useRef<HTMLInputElement | null>(null);
@@ -118,11 +120,27 @@ export const AccountSettings: React.FC<AccountSettingsProps> = () => {
           </form>
         </Box>
         <Box>
-          <Link to="/">Cancel</Link>
+          <Link to="/">
+            <Button variant="contained">Cancel</Button>
+          </Link>
         </Box>
         <Button variant="contained" onClick={handleLogout}>
           Log Out
         </Button>
+        <input
+          placeholder="Add new discipline..."
+          value={newDiscipline}
+          onChange={(event) => {
+            setNewDiscipline(event.target.value);
+          }}
+        />
+        <button
+          onClick={() => {
+            addDiscipline(currentUser.uid, newDiscipline);
+          }}
+        >
+          Add
+        </button>
       </Container>
     </div>
   );

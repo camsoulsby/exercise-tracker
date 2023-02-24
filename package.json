@@ -6,6 +6,9 @@
   "scripts": {
     "dev": "vite",
     "build": "tsc && vite build",
+    "build-dev": "tsc && vite build --mode dev",
+    "build-prod": "tsc && vite build --mode prod",
+    "fb:deploy-prod": "yarn build-prod && firebase deploy -P prod",
     "preview": "vite preview"
   },
   "dependencies": {

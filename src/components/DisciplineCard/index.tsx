@@ -54,8 +54,13 @@ export const DisciplineCard: React.FC<DisciplineCardProps> = ({
     getLastSetDate();
   };
   
-const printDate = (date: Date) => {
+const printFormattedDateString = (date: Date) => {
     const todayDate = new Date()
+    if (date.toString() === "Invalid Date") 
+    {
+       
+        return "No sets recorded" 
+    }
     if (date.getDate() === todayDate.getDate()) {
         return (`${date.getHours()}:${String(date.getMinutes()).padStart(2, "0")} today`)
     } else {
@@ -85,7 +90,7 @@ const printDate = (date: Date) => {
 
       <Typography variant="h4">{disciplineName}</Typography>
       <Typography variant="h5">{`Today: ${repsToday}`}</Typography>
-      <Typography variant="h6">Last set: {printDate(lastSet)}</Typography>
+      <Typography variant="h6">Last set: {printFormattedDateString(lastSet)}</Typography>
       <ButtonGroup>
         <Button
           startIcon={<Add />}

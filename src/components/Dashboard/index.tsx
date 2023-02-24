@@ -4,14 +4,7 @@ import { useAuth } from "../../contexts/AuthContext";
 import { Link, useNavigate } from "react-location";
 import { DisciplineCard } from "../../components";
 // import {} from '@mui/icons-material';
-import {
-  deleteUser,
-  addDiscipline,
-  addGoal,
-  addSet,
-  getDisciplines,
-} from "../../firestore";
-
+import { getDisciplines } from "../../firestore";
 
 type DashboardProps = {};
 
@@ -51,22 +44,6 @@ export const Dashboard: React.FunctionComponent<DashboardProps> = () => {
           </div>
         );
       })}
-      <input
-        placeholder="Add new discipline..."
-        value={newDiscipline}
-        onChange={(event) => {
-          setNewDiscipline(event.target.value);
-        }}
-      />
-      <button
-        onClick={() => {
-          addDiscipline(currentUser.uid, newDiscipline);
-          fetchData();
-        }}
-      >
-        Add
-      </button>
-      
     </>
   );
 };
