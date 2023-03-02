@@ -1,8 +1,16 @@
 import React, { useState, useEffect } from "react";
 import { Container, Typography, Button, ButtonGroup } from "@mui/material";
-import { Add } from "@mui/icons-material";
-import { getMostRecentSetDate, getTotalRepsForPeriod } from "../../firestore";
-import { EnterRepsPopup } from "../../components";
+import { Add, Menu, OneKPlusOutlined } from "@mui/icons-material";
+import {
+  getGoals,
+  getMostRecentSetDate,
+  getTotalRepsForPeriod,
+} from "../../firestore";
+import {
+  EnterRepsPopup,
+  MenuPopup,
+  GoalProgressSection,
+} from "../../components";
 
 interface DisciplineCardProps {
   disciplineName: string;
@@ -18,9 +26,21 @@ export const DisciplineCard: React.FC<DisciplineCardProps> = ({
   updateData,
 }) => {
   const [showEnterRepsPopup, setShowEnterRepsPopup] = useState(false);
+  const [showMenuPopup, setShowMenuPopup] = useState(false);
   const [repsToAdd, setRepsToAdd] = useState(0);
-  const [repsToday, setRepsToday] = useState(0);
   const [lastSet, setLastSet] = useState(new Date());
+  const [goals, setGoals] = useState<{
+    day: number;
+    week: number;
+    month: number;
+    year: number;
+  }>({ day: 0, week: 0, month: 0, year: 0 });
+  const [cumulative, setCumulative] = useState<{
+    day: number;
+    week: number;
+    month: number;
+    year: number;
+  }>({ day: 0, week: 0, month: 0, year: 0 });
 
   const handleHidePopups = () => {
     setShowEnterRepsPopup(false);
@@ -31,42 +51,103 @@ export const DisciplineCard: React.FC<DisciplineCardProps> = ({
     setShowEnterRepsPopup(true);
   };
 
-  const getRepsToday = async () => {
-    const todayMidnight = new Date();
-    todayMidnight.setHours(0, 0, 0, 0);
+  const getCumulativeReps = async () => {
+    const startOfDay = new Date();
+    startOfDay.setHours(0, 0, 0, 0); // adjust this later to allow custom start of day
+
+    const startOfWeek = new Date();
+    startOfWeek.setHours(0, 0, 0, 0);
+    startOfWeek.setDate(startOfWeek.getDate() - startOfWeek.getDay() + 1); // add one to start week on Monday
+    // console.log(startOfWeek)
+
+    const startOfMonth = new Date();
+    startOfMonth.setHours(0, 0, 0, 0);
+    startOfMonth.setDate(1);
+    // console.log(startOfMonth)
+
+    const startOfYear = new Date();
+    startOfYear.setHours(0, 0, 0, 0);
+    startOfYear.setMonth(0);
+    startOfYear.setDate(1);
+    // console.log(startOfYear)
+
     const now = new Date();
-    const reps = await getTotalRepsForPeriod(userId, disciplineId, todayMidnight, now);
-    setRepsToday(reps);
+    const dayReps = await getTotalRepsForPeriod(
+      userId,
+      disciplineId,
+      startOfDay,
+      now
+    );
+    const weekReps = await getTotalRepsForPeriod(
+      userId,
+      disciplineId,
+      startOfWeek,
+      now
+    );
+    const monthReps = await getTotalRepsForPeriod(
+      userId,
+      disciplineId,
+      startOfMonth,
+      now
+    );
+    const yearReps = await getTotalRepsForPeriod(
+      userId,
+      disciplineId,
+      startOfYear,
+      now
+    );
+    setCumulative({
+      day: dayReps,
+      week: weekReps,
+      month: monthReps,
+      year: yearReps,
+    });
   };
-  const getLastSetDate= async () => {
+  const getLastSetDate = async () => {
     const last = await getMostRecentSetDate(userId, disciplineId);
     setLastSet(last);
   };
 
+  const getAllGoals = async () => {
+    const data = await getGoals(userId, disciplineId);
+    data != null && setGoals(data);
+    
+  };
+
   useEffect(() => {
-    getRepsToday();
+    getCumulativeReps();
     getLastSetDate();
+    getAllGoals();
   }, []);
 
   const updateAllData = () => {
     updateData();
-    getRepsToday();
+    getCumulativeReps();
     getLastSetDate();
+    getAllGoals();
   };
-  
-const printFormattedDateString = (date: Date) => {
-    const todayDate = new Date()
-    if (date.toString() === "Invalid Date") 
-    {
-       
-        return "No sets recorded" 
+
+  const printFormattedDateString = (date: Date) => {
+    const todayDate = new Date();
+    if (date.toString() === "Invalid Date") {
+      return "No sets recorded";
     }
     if (date.getDate() === todayDate.getDate()) {
-        return (`${date.getHours()}:${String(date.getMinutes()).padStart(2, "0")} today`)
+      return `${date.getHours()}:${String(date.getMinutes()).padStart(
+        2,
+        "0"
+      )} today`;
     } else {
-        return (`${date.getHours()}:${String(date.getMinutes()).padStart(2, "0")} on ${date.toLocaleDateString()}`)
-    } 
-}
+      return `${date.getHours()}:${String(date.getMinutes()).padStart(
+        2,
+        "0"
+      )} on ${date.toLocaleDateString()}`;
+    }
+  };
+
+  const toggleMenu = () => {
+    setShowMenuPopup(!showMenuPopup);
+  };
 
   return (
     <Container
@@ -74,7 +155,7 @@ const printFormattedDateString = (date: Date) => {
         position: "relative",
         backgroundColor: "grey.300",
         margin: "10px 0 10px 0",
-        height: "200px",
+        height: "300px",
       }}
     >
       {showEnterRepsPopup && (
@@ -87,10 +168,20 @@ const printFormattedDateString = (date: Date) => {
           hideEnterRepsPopup={handleHidePopups}
         />
       )}
-
+      {showMenuPopup && (
+        <MenuPopup
+          disciplineName={disciplineName}
+          disciplineId={disciplineId}
+          userId={userId}
+          updateData={updateAllData}
+        />
+      )}
+      <Menu onClick={toggleMenu} />
       <Typography variant="h4">{disciplineName}</Typography>
-      <Typography variant="h5">{`Today: ${repsToday}`}</Typography>
-      <Typography variant="h6">Last set: {printFormattedDateString(lastSet)}</Typography>
+      <Typography variant="h5">{`Today: ${cumulative.day}`}</Typography>
+      <Typography variant="h6">
+        Last set: {printFormattedDateString(lastSet)}
+      </Typography>
       <ButtonGroup>
         <Button
           startIcon={<Add />}
@@ -133,20 +224,7 @@ const printFormattedDateString = (date: Date) => {
           Custom
         </Button>
       </ButtonGroup>
-      {/* <Button
-        variant="contained"
-        color="secondary"
-        onClick={() => {
-          addGoal(userId, disciplineId, {
-            targetReps: 100,
-            startDate: new Date(),
-            endDate: new Date(),
-          });
-          updateData();
-        }}
-      >
-        Add Goal
-      </Button> */}
+      <GoalProgressSection goals={goals} cumulative={cumulative} />
     </Container>
   );
 };
