@@ -5,6 +5,7 @@ import {
   getGoals,
   getMostRecentSetDate,
   getTotalRepsForPeriod,
+  addGoal
 } from "../../firestore";
 import {
   EnterRepsPopup,
@@ -18,6 +19,8 @@ interface DisciplineCardProps {
   disciplineId: string;
   updateData: () => void;
 }
+
+
 
 export const DisciplineCard: React.FC<DisciplineCardProps> = ({
   disciplineName,
@@ -50,6 +53,11 @@ export const DisciplineCard: React.FC<DisciplineCardProps> = ({
     setRepsToAdd(repsToAdd);
     setShowEnterRepsPopup(true);
   };
+
+  const updateGoals = (type: string, targetReps: number) => {
+    addGoal(userId, disciplineId, type, targetReps )
+    updateAllData();
+  }
 
   const getCumulativeReps = async () => {
     const startOfDay = new Date();
@@ -171,9 +179,9 @@ export const DisciplineCard: React.FC<DisciplineCardProps> = ({
       {showMenuPopup && (
         <MenuPopup
           disciplineName={disciplineName}
-          disciplineId={disciplineId}
-          userId={userId}
-          updateData={updateAllData}
+          currentGoals={goals}
+          updateGoals={updateGoals}
+
         />
       )}
       <Menu onClick={toggleMenu} />
