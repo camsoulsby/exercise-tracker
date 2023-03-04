@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Container, Typography, Button, ButtonGroup } from "@mui/material";
-import { Add, Menu, OneKPlusOutlined } from "@mui/icons-material";
+import { Add, Menu } from "@mui/icons-material";
 import {
   getGoals,
   getMostRecentSetDate,
@@ -9,7 +9,7 @@ import {
 } from "../../firestore";
 import {
   EnterRepsPopup,
-  MenuPopup,
+  EditGoalsPopup,
   GoalProgressSection,
 } from "../../components";
 
@@ -17,7 +17,6 @@ interface DisciplineCardProps {
   disciplineName: string;
   userId: string;
   disciplineId: string;
-  updateData: () => void;
 }
 
 
@@ -26,12 +25,11 @@ export const DisciplineCard: React.FC<DisciplineCardProps> = ({
   disciplineName,
   userId,
   disciplineId,
-  updateData,
 }) => {
   const [showEnterRepsPopup, setShowEnterRepsPopup] = useState(false);
-  const [showMenuPopup, setShowMenuPopup] = useState(false);
+  const [showEditGoalsPopup, setShowEditGoalsPopup] = useState(false);
   const [repsToAdd, setRepsToAdd] = useState(0);
-  const [lastSet, setLastSet] = useState(new Date());
+  const [lastSet, setLastSet] = useState(new Date());  // seems like this doesn't need to be state?
   const [goals, setGoals] = useState<{
     day: number;
     week: number;
@@ -45,8 +43,19 @@ export const DisciplineCard: React.FC<DisciplineCardProps> = ({
     year: number;
   }>({ day: 0, week: 0, month: 0, year: 0 });
 
+  useEffect(() => {
+    fetchData();
+  }, []);
+
+  const fetchData = () => {
+    getCumulativeReps();
+    getLastSetDate();
+    getAllGoals();
+  };
+
   const handleHidePopups = () => {
     setShowEnterRepsPopup(false);
+    setShowEditGoalsPopup(false);
   };
 
   const handleEnterReps = (repsToAdd: number) => {
@@ -56,9 +65,10 @@ export const DisciplineCard: React.FC<DisciplineCardProps> = ({
 
   const updateGoals = (type: string, targetReps: number) => {
     addGoal(userId, disciplineId, type, targetReps )
-    updateAllData();
+    getAllGoals();
   }
 
+  //put this all into firsestore.ts? pass in day start time as argument
   const getCumulativeReps = async () => {
     const startOfDay = new Date();
     startOfDay.setHours(0, 0, 0, 0); // adjust this later to allow custom start of day
@@ -122,18 +132,6 @@ export const DisciplineCard: React.FC<DisciplineCardProps> = ({
     
   };
 
-  useEffect(() => {
-    getCumulativeReps();
-    getLastSetDate();
-    getAllGoals();
-  }, []);
-
-  const updateAllData = () => {
-    updateData();
-    getCumulativeReps();
-    getLastSetDate();
-    getAllGoals();
-  };
 
   const printFormattedDateString = (date: Date) => {
     const todayDate = new Date();
@@ -153,9 +151,6 @@ export const DisciplineCard: React.FC<DisciplineCardProps> = ({
     }
   };
 
-  const toggleMenu = () => {
-    setShowMenuPopup(!showMenuPopup);
-  };
 
   return (
     <Container
@@ -172,19 +167,20 @@ export const DisciplineCard: React.FC<DisciplineCardProps> = ({
           numberReps={repsToAdd}
           userId={userId}
           disciplineId={disciplineId}
-          updateData={updateAllData}
+          updateData={fetchData}
           hideEnterRepsPopup={handleHidePopups}
         />
       )}
-      {showMenuPopup && (
-        <MenuPopup
+      {showEditGoalsPopup && (
+        <EditGoalsPopup
           disciplineName={disciplineName}
+          hideEditGoalsPopup={handleHidePopups}
           currentGoals={goals}
           updateGoals={updateGoals}
 
         />
       )}
-      <Menu onClick={toggleMenu} />
+      
       <Typography variant="h4">{disciplineName}</Typography>
       <Typography variant="h5">{`Today: ${cumulative.day}`}</Typography>
       <Typography variant="h6">
@@ -233,6 +229,8 @@ export const DisciplineCard: React.FC<DisciplineCardProps> = ({
         </Button>
       </ButtonGroup>
       <GoalProgressSection goals={goals} cumulative={cumulative} />
+      {/* Move the below inside the goals progress section and pass through a callback to show the menu */}
+      <Menu onClick={() => setShowEditGoalsPopup(true)} />
     </Container>
   );
 };

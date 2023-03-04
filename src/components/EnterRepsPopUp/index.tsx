@@ -46,10 +46,10 @@ export const EnterRepsPopup: React.FC<EnterRepsPopupProps> = ({
       sx={{
         backgroundColor: "grey.500",
         position: "absolute",
-        top: "50px",
-        left: "50px",
-        right: "50px",
-        bottom: "50px",
+        top: "5px",
+        left: "5px",
+        right: "5px",
+        bottom: "5px",
         zIndex: 1,
       }}
     >

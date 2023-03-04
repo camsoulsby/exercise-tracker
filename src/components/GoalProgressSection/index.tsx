@@ -15,7 +15,6 @@ export const GoalProgressSection: React.FC<GoalProgressSectionProps> = ({
     <Container
       sx={{ backgroundColor: "white", height: "100px", width: "100%" }}
     >
-     
         {goals.day != 0 && <GoalProgressCard type={'Daily'} cumulative={cumulative.day} target={goals.day}></GoalProgressCard>}
         {goals.week != 0 && <GoalProgressCard type={'Weekly'} cumulative={cumulative.week} target={goals.week}></GoalProgressCard>}
         {goals.month != 0 && <GoalProgressCard type={'Monthly'} cumulative={cumulative.month} target={goals.month}></GoalProgressCard>}
