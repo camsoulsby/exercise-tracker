@@ -7,6 +7,6 @@ export { AccountSettings } from "./AccountSettings";
 export { TopNav } from "./TopNav";
 export { DisciplineCard } from "./DisciplineCard";
 export { EnterRepsPopup } from "./EnterRepsPopUp";
-export { MenuPopup } from "./MenuPopup";
+export { EditGoalsPopup } from "./EditGoalsPopup";
 export { GoalProgressSection } from "./GoalProgressSection";
 export { GoalProgressCard } from "./GoalProgressCard";

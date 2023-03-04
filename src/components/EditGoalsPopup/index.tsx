@@ -1,8 +1,9 @@
 import { Typography, Box, Button, TextField, MenuItem } from "@mui/material";
 import React, { useState } from "react";
 
-interface MenuPopupProps {
+interface EditGoalsPopupProps {
   disciplineName: string;
+  hideEditGoalsPopup: () => void;
   currentGoals: {
     day: number;
     week: number;
@@ -12,8 +13,9 @@ interface MenuPopupProps {
   updateGoals: (type: string, targetReps: number) => void;
 }
 
-export const MenuPopup: React.FC<MenuPopupProps> = ({
+export const EditGoalsPopup: React.FC<EditGoalsPopupProps> = ({
   disciplineName,
+  hideEditGoalsPopup,
   updateGoals,
   currentGoals
 }) => {
@@ -50,10 +52,10 @@ export const MenuPopup: React.FC<MenuPopupProps> = ({
       sx={{
         backgroundColor: "grey.500",
         position: "absolute",
-        top: "50px",
-        left: "50px",
-        right: "50px",
-        bottom: "50px",
+        top: "5px",
+        left: "5px",
+        right: "5px",
+        bottom: "5px",
         zIndex: 1,
       }}
     >
@@ -72,7 +74,8 @@ export const MenuPopup: React.FC<MenuPopupProps> = ({
       ))}
     </TextField>
       <TextField type="number" value={targetReps} onChange={(e)=>setTargetReps(parseInt(e.target.value))}/>
-      <Button onClick={handleAddGoal}>Add Goal</Button>
+      <Button onClick={handleAddGoal}>Update Goal</Button>
+      <Button variant= 'contained' color='warning' onClick={hideEditGoalsPopup}>Close</Button>
     </Box>
   );
 };
