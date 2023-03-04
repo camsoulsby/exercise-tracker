@@ -2,7 +2,7 @@ import React, { useState, useRef, useEffect } from "react";
 import { Button, TextField, Box, Stack, Container } from "@mui/material";
 import { useAuth } from "../../contexts/AuthContext";
 import { Link, useNavigate } from "react-location";
-import { addDiscipline } from "../../firestore";
+import { addDiscipline, getDayStartHour, setDayStartHour } from "../../firestore";
 
 interface AccountSettingsProps {}
 
@@ -13,6 +13,7 @@ export const AccountSettings: React.FC<AccountSettingsProps> = () => {
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
   const [newDiscipline, setNewDiscipline] = useState("");
+  const [newStartHour, setNewStartHour] = useState(0);
 
   const emailRef = useRef<HTMLInputElement | null>(null);
   const passwordRef = useRef<HTMLInputElement | null>(null);
@@ -25,7 +26,13 @@ export const AccountSettings: React.FC<AccountSettingsProps> = () => {
 
   useEffect(() => {
     setEmail(currentUser?.email);
+    getCurrentStartHour()
   }, []);
+
+  const getCurrentStartHour = async () => {
+    const startHour = await getDayStartHour(currentUser.uid);
+    setNewStartHour(startHour)
+  }
 
   async function handleLogout() {
     setError("");
@@ -141,6 +148,21 @@ export const AccountSettings: React.FC<AccountSettingsProps> = () => {
         >
           Add
         </button>
+        <TextField
+          type="number"
+          placeholder="Set custom hour for start of day..."
+          value={newStartHour}
+          onChange={(event) => {
+            setNewStartHour(parseInt(event.target.value));
+          }}
+        />
+        <Button
+          onClick={() => {
+            setDayStartHour(currentUser.uid, newStartHour);
+          }}
+        >
+          Add
+        </Button>
       </Container>
     </div>
   );
