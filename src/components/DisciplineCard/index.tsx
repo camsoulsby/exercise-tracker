@@ -70,8 +70,6 @@ export const DisciplineCard: React.FC<DisciplineCardProps> = ({
     getAllGoals();
   }
 
-
-  //put this all into firsestore.ts? pass in day start time as argument
   const getCumulativeReps = async () => {
     const customStartOfDay = await getDayStartHour(userId);
     const startOfDay = new Date();

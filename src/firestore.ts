@@ -110,10 +110,10 @@ export const getGoals = async (userId: string, disciplineId: string): Promise<{d
   const goalSnapshot = await getDoc(disciplineDoc);
   if (goalSnapshot.exists()) {
     const userData = goalSnapshot.data();
-    const dailyGoal = userData.dailyGoal;
-    const weeklyGoal = userData.weeklyGoal;
-    const monthlyGoal = userData.monthlyGoal;
-    const yearlyGoal = userData.yearlyGoal;
+    const dailyGoal = userData.dailyGoal || 0;
+    const weeklyGoal = userData.weeklyGoal || 0;
+    const monthlyGoal = userData.monthlyGoal || 0;
+    const yearlyGoal = userData.yearlyGoal || 0;
     return {day: dailyGoal, week: weeklyGoal, month: monthlyGoal, year: yearlyGoal};
   } else {
     return null;
