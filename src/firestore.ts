@@ -22,6 +22,7 @@ export const createUser = async (
 
 }
 
+//read
 export const getUsername = async (userId: string) => {
   const userDoc = doc(db, "users", userId);
   const userSnapshot = await getDoc(userDoc);
@@ -34,7 +35,7 @@ export const getUsername = async (userId: string) => {
   }
 }
 
-//read
+
 export const getUsers = async () => {
   const usersCollectionRef = collection(db, "users");
   const data = await getDocs(usersCollectionRef);
@@ -120,13 +121,33 @@ export const getGoals = async (userId: string, disciplineId: string): Promise<{d
   
 }
 
+export const getDayStartHour = async (userId: string) => {
+  const userDoc = doc(db, "users", userId);
+  const userSnapshot = await getDoc(userDoc);
+  if (userSnapshot.exists()) {
+    const userData = userSnapshot.data();
+    const dayStart = userData.dayStartHour;
+    if (dayStart != undefined) {
+      return dayStart;
+    }
+     return 0;
+  } else {
+    return 0;
+  }
+}
+
 //update
 export const addDiscipline = async (userId: string, newDiscipline: string) => {
   const userDoc = doc(db, "users", userId);
   const disciplinesRef = collection(userDoc, "disciplines");
   await addDoc(disciplinesRef, { name: newDiscipline, dailyGoal: 0, weeklyGoal: 0, monthlyGoal: 0, yearlyGoal: 0 });
 }
-
+export const setDayStartHour = async (userId: string, startHour: number) => {
+  const userDoc = doc(db, "users", userId);
+  await updateDoc(userDoc, {
+    dayStartHour: startHour
+  });
+}
 
 export const addGoal = async (userId: string, disciplineId: string, type:string, targetReps:number) =>
 {

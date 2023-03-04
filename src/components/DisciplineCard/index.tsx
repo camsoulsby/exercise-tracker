@@ -5,7 +5,8 @@ import {
   getGoals,
   getMostRecentSetDate,
   getTotalRepsForPeriod,
-  addGoal
+  addGoal,
+  getDayStartHour,
 } from "../../firestore";
 import {
   EnterRepsPopup,
@@ -42,6 +43,7 @@ export const DisciplineCard: React.FC<DisciplineCardProps> = ({
     month: number;
     year: number;
   }>({ day: 0, week: 0, month: 0, year: 0 });
+ 
 
   useEffect(() => {
     fetchData();
@@ -68,23 +70,25 @@ export const DisciplineCard: React.FC<DisciplineCardProps> = ({
     getAllGoals();
   }
 
+
   //put this all into firsestore.ts? pass in day start time as argument
   const getCumulativeReps = async () => {
+    const customStartOfDay = await getDayStartHour(userId);
     const startOfDay = new Date();
-    startOfDay.setHours(0, 0, 0, 0); // adjust this later to allow custom start of day
+    startOfDay.setHours(customStartOfDay, 0, 0, 0);
 
     const startOfWeek = new Date();
-    startOfWeek.setHours(0, 0, 0, 0);
+    startOfWeek.setHours(customStartOfDay, 0, 0, 0);
     startOfWeek.setDate(startOfWeek.getDate() - startOfWeek.getDay() + 1); // add one to start week on Monday
     // console.log(startOfWeek)
 
     const startOfMonth = new Date();
-    startOfMonth.setHours(0, 0, 0, 0);
+    startOfMonth.setHours(customStartOfDay, 0, 0, 0);
     startOfMonth.setDate(1);
     // console.log(startOfMonth)
 
     const startOfYear = new Date();
-    startOfYear.setHours(0, 0, 0, 0);
+    startOfYear.setHours(customStartOfDay, 0, 0, 0);
     startOfYear.setMonth(0);
     startOfYear.setDate(1);
     // console.log(startOfYear)

@@ -9,7 +9,6 @@ export const Dashboard: React.FunctionComponent<DashboardProps> = () => {
   const [disciplines, setDisciplines] = useState<
     Array<{ id: string; name: string }>
   >([]);
-
   const fetchData = async () => {
     const updatedDisciplines = await getDisciplines(currentUser.uid);
     setDisciplines(updatedDisciplines);
