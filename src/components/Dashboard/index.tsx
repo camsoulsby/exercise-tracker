@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useAuth } from "../../contexts/AuthContext";
 import { DisciplineCard } from "../../components";
 import { getDisciplines } from "../../firestore";
+import { Container } from "@mui/material";
 
 type DashboardProps = {};
 
@@ -21,7 +22,7 @@ export const Dashboard: React.FunctionComponent<DashboardProps> = () => {
   const { currentUser } = useAuth();
 
   return (
-    <>
+    <Container sx={{ padding: '5px 0px', backgroundColor: 'primary.contrastText'}}>
       {disciplines.map((discipline) => {
         return (
           <div key={discipline.id}>
@@ -33,6 +34,6 @@ export const Dashboard: React.FunctionComponent<DashboardProps> = () => {
           </div>
         );
       })}
-    </>
+    </Container>
   );
 };

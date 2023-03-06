@@ -10,3 +10,6 @@ export { EnterRepsPopup } from "./EnterRepsPopUp";
 export { EditGoalsPopup } from "./EditGoalsPopup";
 export { GoalProgressSection } from "./GoalProgressSection";
 export { GoalProgressCard } from "./GoalProgressCard";
+export { AddRepsSection } from "./AddRepsSection";
+export { DisciplineCardHeader } from "./DisciplineCardHeader";
+export { ProgressBar } from "./ProgressBar";

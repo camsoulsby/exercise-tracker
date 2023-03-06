@@ -1,5 +1,5 @@
 import React, {useState} from "react";
-import { Button, Box ,TextField} from "@mui/material";
+import { Button, Box ,TextField, Typography} from "@mui/material";
 import { addSet } from "../../firestore";
 
 interface EnterRepsPopupProps {
@@ -44,13 +44,15 @@ export const EnterRepsPopup: React.FC<EnterRepsPopupProps> = ({
   return (
     <Box
       sx={{
-        backgroundColor: "grey.500",
+        backgroundColor: "secondary.main",
         position: "absolute",
-        top: "5px",
-        left: "5px",
-        right: "5px",
-        bottom: "5px",
-        zIndex: 1,
+        top: "0px",
+        left: "0px",
+        right: "0px",
+        bottom: "0px",
+        zIndex: 10,
+        borderRadius: "10px",
+        padding: "10px",
       }}
     >
       
@@ -58,11 +60,21 @@ export const EnterRepsPopup: React.FC<EnterRepsPopupProps> = ({
       { numberReps === 0 ? 
       <TextField label="Number of reps" onChange={handleInputChange} /> 
       : 
-      <h3>Confirm adding {numberReps} {disciplineName}</h3>}
+      <Typography variant='h5' sx={{marginBottom: '50px'}}>Add {numberReps} {disciplineName}?</Typography>}
+       <Box
+      sx={{
+        display: "flex",
+        justifyContent: "space-around",
+        alignItems: "center",
+      }}
+    >
+      <Button sx={{width:'150px'}} disabled={!validInput} variant= 'contained' color= 'success' onClick={() => {handleEnterReps(repsToAdd)}}>Confirm</Button>
+      <Button sx={{width:'150px'}} variant= 'contained' color='warning' onClick={hideEnterRepsPopup}>Cancel</Button>
+      </Box>
+      
 
-      <p>Date: "Todo"</p>
-      <Button disabled={!validInput} variant= 'contained' color= 'success' onClick={() => {handleEnterReps(repsToAdd)}}>Confirm</Button>
-      <Button variant= 'contained' color='warning' onClick={hideEnterRepsPopup}>Cancel</Button>
+      <Typography variant='h5'sx={{marginTop: '50px'}}>Date:</Typography>
+      <Typography variant='body1'> (functionality to edit date/time coming soon)</Typography>
     </Box>
   );
 };

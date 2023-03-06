@@ -93,7 +93,7 @@ export const getMostRecentSetDate = async (userId: string, disciplineId: string)
   const disciplineDoc = doc(disciplinesRef, disciplineId);
   const setsRef = collection(disciplineDoc, "sets");
   const data = await getDocs(setsRef);
-  const mappedData: DataPoint[] = data.docs.map((doc) => {
+  const mappedData: DataPoint[] = data.docs.map((doc) => {  
     const setData = doc.data();
     return {
       timeStamp: setData.timeStamp.toDate()

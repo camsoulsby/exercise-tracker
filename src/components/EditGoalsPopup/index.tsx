@@ -56,7 +56,7 @@ export const EditGoalsPopup: React.FC<EditGoalsPopupProps> = ({
         left: "5px",
         right: "5px",
         bottom: "5px",
-        zIndex: 1,
+        zIndex: 10,
       }}
     >
       <Typography variant="h4">Menu {disciplineName}</Typography>

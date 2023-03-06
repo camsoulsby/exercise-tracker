@@ -1,19 +1,30 @@
 import React, { useState, useEffect } from "react";
-import { Container, Button } from "@mui/material";
+import { Box, Typography } from "@mui/material";
+import { ProgressBar } from "../../components";
 
 interface GoalProgressCardProps {
-    type: string;
+    label: string;
     cumulative: number;
   target: number;
 }
 
-export const GoalProgressCard: React.FC<GoalProgressCardProps> = ({type, cumulative, target}) => {
+export const GoalProgressCard: React.FC<GoalProgressCardProps> = ({label, cumulative, target}) => {
   
 
     return (
-        <Container>
-           {type} {cumulative} / {target}
-        </Container>
+        <Box sx={{padding: '0px', display: "flex",
+        justifyContent: "space-between",
+        alignItems: "center",}}>
+          
+      
+      
+   
+          <Typography variant="body1" sx={{color:'primary.contrastText'}}>
+          
+          {label} {cumulative} / {target}
+          </Typography>
+          <ProgressBar cumulative={cumulative} target={target} />
+        </Box>
 
 )
 }

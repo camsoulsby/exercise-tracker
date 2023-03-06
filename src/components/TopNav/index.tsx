@@ -27,7 +27,7 @@ export const TopNav: React.FC<TopNavProps> = () => {
 
   return (
     <AppBar position="static">
-      <Toolbar>
+      <Toolbar sx={{backgroundColor: 'primary.main'}}>
         <Link to="/">
           <IconButton edge="start" color="inherit" aria-label="home">
             <Home sx={{color: "primary.contrastText"}}/>
