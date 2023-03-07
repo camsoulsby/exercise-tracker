@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Container, Typography, Button, ButtonGroup } from "@mui/material";
-import { Add, Menu } from "@mui/icons-material";
+import { Container, Typography, Box } from "@mui/material";
 import {
   getGoals,
   getMostRecentSetDate,
@@ -12,6 +11,8 @@ import {
   EnterRepsPopup,
   EditGoalsPopup,
   GoalProgressSection,
+  AddRepsSection,
+  DisciplineCardHeader
 } from "../../components";
 
 interface DisciplineCardProps {
@@ -19,8 +20,6 @@ interface DisciplineCardProps {
   userId: string;
   disciplineId: string;
 }
-
-
 
 export const DisciplineCard: React.FC<DisciplineCardProps> = ({
   disciplineName,
@@ -30,7 +29,7 @@ export const DisciplineCard: React.FC<DisciplineCardProps> = ({
   const [showEnterRepsPopup, setShowEnterRepsPopup] = useState(false);
   const [showEditGoalsPopup, setShowEditGoalsPopup] = useState(false);
   const [repsToAdd, setRepsToAdd] = useState(0);
-  const [lastSet, setLastSet] = useState(new Date());  // seems like this doesn't need to be state?
+  const [lastSet, setLastSet] = useState(new Date());
   const [goals, setGoals] = useState<{
     day: number;
     week: number;
@@ -43,7 +42,6 @@ export const DisciplineCard: React.FC<DisciplineCardProps> = ({
     month: number;
     year: number;
   }>({ day: 0, week: 0, month: 0, year: 0 });
- 
 
   useEffect(() => {
     fetchData();
@@ -55,20 +53,26 @@ export const DisciplineCard: React.FC<DisciplineCardProps> = ({
     getAllGoals();
   };
 
-  const handleHidePopups = () => {
+  const handleHideEnterRepsPopup = () => {
+    setRepsToAdd(0);
     setShowEnterRepsPopup(false);
+  };
+  const handleHideEditGoalsPopup = () => {
     setShowEditGoalsPopup(false);
   };
 
-  const handleEnterReps = (repsToAdd: number) => {
-    setRepsToAdd(repsToAdd);
-    setShowEnterRepsPopup(true);
+  const increaseRepsToAdd = (increaseBy: number) => {
+    setRepsToAdd(repsToAdd + increaseBy);
+  };
+
+  const clearRepsToAdd = () => {
+    setRepsToAdd(0);
   };
 
   const updateGoals = (type: string, targetReps: number) => {
-    addGoal(userId, disciplineId, type, targetReps )
+    addGoal(userId, disciplineId, type, targetReps);
     getAllGoals();
-  }
+  };
 
   const getCumulativeReps = async () => {
     const customStartOfDay = await getDayStartHour(userId);
@@ -131,36 +135,18 @@ export const DisciplineCard: React.FC<DisciplineCardProps> = ({
   const getAllGoals = async () => {
     const data = await getGoals(userId, disciplineId);
     data != null && setGoals(data);
-    
   };
-
-
-  const printFormattedDateString = (date: Date) => {
-    const todayDate = new Date();
-    if (date.toString() === "Invalid Date") {
-      return "No sets recorded";
-    }
-    if (date.getDate() === todayDate.getDate()) {
-      return `${date.getHours()}:${String(date.getMinutes()).padStart(
-        2,
-        "0"
-      )} today`;
-    } else {
-      return `${date.getHours()}:${String(date.getMinutes()).padStart(
-        2,
-        "0"
-      )} on ${date.toLocaleDateString()}`;
-    }
-  };
-
 
   return (
     <Container
       sx={{
         position: "relative",
-        backgroundColor: "grey.300",
-        margin: "10px 0 10px 0",
-        height: "300px",
+        backgroundColor: "primary.main",
+        border: "1px solid white",
+        borderRadius: "10px",
+        marginBottom: "5px",
+        width: "auto",
+        padding: "5px",
       }}
     >
       {showEnterRepsPopup && (
@@ -170,69 +156,32 @@ export const DisciplineCard: React.FC<DisciplineCardProps> = ({
           userId={userId}
           disciplineId={disciplineId}
           updateData={fetchData}
-          hideEnterRepsPopup={handleHidePopups}
+          hideEnterRepsPopup={handleHideEnterRepsPopup}
         />
       )}
       {showEditGoalsPopup && (
         <EditGoalsPopup
           disciplineName={disciplineName}
-          hideEditGoalsPopup={handleHidePopups}
+          hideEditGoalsPopup={handleHideEditGoalsPopup}
           currentGoals={goals}
           updateGoals={updateGoals}
-
         />
       )}
+      <DisciplineCardHeader disciplineName={disciplineName} lastSet={lastSet}/>
       
-      <Typography variant="h4">{disciplineName}</Typography>
-      <Typography variant="h5">{`Today: ${cumulative.day}`}</Typography>
-      <Typography variant="h6">
-        Last set: {printFormattedDateString(lastSet)}
-      </Typography>
-      <ButtonGroup>
-        <Button
-          startIcon={<Add />}
-          variant="contained"
-          color="secondary"
-          onClick={() => {
-            handleEnterReps(10);
-          }}
-        >
-          10
-        </Button>
-        <Button
-          startIcon={<Add />}
-          variant="contained"
-          color="secondary"
-          onClick={() => {
-            handleEnterReps(20);
-          }}
-        >
-          20
-        </Button>
-        <Button
-          startIcon={<Add />}
-          variant="contained"
-          color="secondary"
-          onClick={() => {
-            handleEnterReps(30);
-          }}
-        >
-          30
-        </Button>
-        <Button
-          startIcon={<Add />}
-          variant="contained"
-          color="secondary"
-          onClick={() => {
-            handleEnterReps(0);
-          }}
-        >
-          Custom
-        </Button>
-      </ButtonGroup>
-      <GoalProgressSection goals={goals} cumulative={cumulative} />
-      {/* Move the below inside the goals progress section and pass through a callback to show the menu */}
-      <Menu onClick={() => setShowEditGoalsPopup(true)} />
+
+      <AddRepsSection
+        repsToAdd={repsToAdd}
+        increaseRepsToAdd={increaseRepsToAdd}
+        setShowEnterRepsPopup={setShowEnterRepsPopup}
+        clearRepsToAdd={clearRepsToAdd}
+      />
+
+      <GoalProgressSection
+        goals={goals}
+        cumulative={cumulative}
+        showEditGoalsPopup={setShowEditGoalsPopup}
+      />
     </Container>
   );
 };
