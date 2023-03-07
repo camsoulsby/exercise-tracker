@@ -142,9 +142,7 @@ export const DisciplineCard: React.FC<DisciplineCardProps> = ({
       sx={{
         position: "relative",
         backgroundColor: "primary.main",
-        border: "1px solid white",
-        borderRadius: "10px",
-        marginBottom: "5px",
+        borderTop: "1px solid white",
         width: "auto",
         padding: "5px",
       }}

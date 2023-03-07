@@ -22,7 +22,7 @@ export const Dashboard: React.FunctionComponent<DashboardProps> = () => {
   const { currentUser } = useAuth();
 
   return (
-    <Container sx={{ padding: '5px 0px', backgroundColor: 'primary.contrastText'}}>
+    <Container sx={{ padding: '0px', backgroundColor: 'primary.contrastText'}}>
       {disciplines.map((discipline) => {
         return (
           <div key={discipline.id}>

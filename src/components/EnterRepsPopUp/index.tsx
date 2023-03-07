@@ -51,7 +51,6 @@ export const EnterRepsPopup: React.FC<EnterRepsPopupProps> = ({
         right: "0px",
         bottom: "0px",
         zIndex: 10,
-        borderRadius: "10px",
         padding: "10px",
       }}
     >

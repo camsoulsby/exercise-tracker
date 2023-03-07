@@ -21,11 +21,11 @@ export const GoalProgressSection: React.FC<GoalProgressSectionProps> = ({
          <Box
           sx={{
             display: "flex",
-            justifyContent: "space-between",
+            justifyContent: "left",
             alignItems: "center",
           }}>
             <Typography variant="h6" sx={{color: 'primary.contrastText'}}>Goals</Typography>
-            <Edit sx={{color: "primary.contrastText"}} onClick={() => showEditGoalsPopup(true)} />
+            <Edit sx={{color: "primary.contrastText", marginLeft: '5px'}} onClick={() => showEditGoalsPopup(true)} />
         </Box>
         {goals.day > 0 && <GoalProgressCard label={'Daily:'} cumulative={cumulative.day} target={goals.day}></GoalProgressCard>}
         {goals.week > 0 && <GoalProgressCard label={'Weekly:'} cumulative={cumulative.week} target={goals.week}></GoalProgressCard>}
