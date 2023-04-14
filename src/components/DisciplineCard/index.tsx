@@ -12,7 +12,7 @@ import {
   EditGoalsPopup,
   GoalProgressSection,
   AddRepsSection,
-  DisciplineCardHeader,
+  DisciplineCardHeader
 } from "../../components";
 
 interface DisciplineCardProps {
@@ -82,10 +82,12 @@ export const DisciplineCard: React.FC<DisciplineCardProps> = ({
     const startOfWeek = new Date();
     startOfWeek.setHours(customStartOfDay, 0, 0, 0);
     startOfWeek.setDate(startOfWeek.getDate() - startOfWeek.getDay() + 1); // add one to start week on Monday
+    // console.log(startOfWeek)
 
     const startOfMonth = new Date();
     startOfMonth.setHours(customStartOfDay, 0, 0, 0);
     startOfMonth.setDate(1);
+    // console.log(startOfMonth)
 
     const startOfYear = new Date();
     startOfYear.setHours(customStartOfDay, 0, 0, 0);
@@ -163,7 +165,8 @@ export const DisciplineCard: React.FC<DisciplineCardProps> = ({
           updateGoals={updateGoals}
         />
       )}
-      <DisciplineCardHeader disciplineName={disciplineName} lastSet={lastSet} />
+      <DisciplineCardHeader disciplineName={disciplineName} lastSet={lastSet}/>
+      
 
       <AddRepsSection
         repsToAdd={repsToAdd}
