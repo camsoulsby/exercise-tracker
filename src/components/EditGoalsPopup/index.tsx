@@ -20,7 +20,7 @@ export const EditGoalsPopup: React.FC<EditGoalsPopupProps> = ({
   currentGoals,
 }) => {
   const [targetReps, setTargetReps] = useState(currentGoals.day);
-  const [goalType, setGoalType] = useState("daily");
+  const [goalType, setGoalType] = useState("Daily");
 
   const handleAddGoal = () => {
     updateGoals(goalType, targetReps);
@@ -31,16 +31,16 @@ export const EditGoalsPopup: React.FC<EditGoalsPopupProps> = ({
 
     //how do I do this better?
     let currentGoalForType = 0;
-    if (event.target.value == "daily") currentGoalForType = currentGoals.day;
-    if (event.target.value == "weekly") currentGoalForType = currentGoals.week;
-    if (event.target.value == "monthly")
+    if (event.target.value == "Daily") currentGoalForType = currentGoals.day;
+    if (event.target.value == "Weekly") currentGoalForType = currentGoals.week;
+    if (event.target.value == "Monthly")
       currentGoalForType = currentGoals.month;
-    if (event.target.value == "yearly") currentGoalForType = currentGoals.year;
+    if (event.target.value == "Yearly") currentGoalForType = currentGoals.year;
 
     setTargetReps(currentGoalForType);
   };
 
-  const options = ["daily", "weekly", "monthly", "yearly"];
+  const options = ["Daily", "Weekly", "Monthly", "Yearly"];
 
   return (
     <Box
