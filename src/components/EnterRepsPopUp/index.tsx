@@ -94,7 +94,6 @@ export const EnterRepsPopup: React.FC<EnterRepsPopupProps> = ({
         Date:
       </Typography>
       <Typography variant="body1">
-        Select custom date/time:
         <DateTimePicker
           value={dayjs(repsDate)}
           onChange={(date) =>
