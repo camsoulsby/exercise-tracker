@@ -31,11 +31,11 @@ export const EditGoalsPopup: React.FC<EditGoalsPopupProps> = ({
 
     //how do I do this better?
     let currentGoalForType = 0;
-    if (event.target.value == "Daily") currentGoalForType = currentGoals.day;
-    if (event.target.value == "Weekly") currentGoalForType = currentGoals.week;
-    if (event.target.value == "Monthly")
+    if (event.target.value == "daily") currentGoalForType = currentGoals.day;
+    if (event.target.value == "weekly") currentGoalForType = currentGoals.week;
+    if (event.target.value == "monthly")
       currentGoalForType = currentGoals.month;
-    if (event.target.value == "Yearly") currentGoalForType = currentGoals.year;
+    if (event.target.value == "yearly") currentGoalForType = currentGoals.year;
 
     setTargetReps(currentGoalForType);
   };
